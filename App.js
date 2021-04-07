@@ -1,7 +1,8 @@
 import { Picker } from '@react-native-picker/picker';
 import React, { Component } from 'react';
-import { StyleSheet, SafeAreaView, TextInput, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, ScrollView } from 'react-native'
 import ImagemLogo from './src/components/ImagemLogo'
+import Slider from '@react-native-community/slider'
      
 
 class App extends Component{
