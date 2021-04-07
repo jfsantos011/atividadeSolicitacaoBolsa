@@ -1,166 +1,309 @@
-import { Picker } from '@react-native-picker/picker';
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, ScrollView } from 'react-native'
 import ImagemLogo from './src/components/ImagemLogo'
+
+import { Picker } from '@react-native-picker/picker'
 import Slider from '@react-native-community/slider'
-     
 
-class App extends Component{
-  
-
-  constructor(props){
-    super(props);
+export default class App extends Component {
+  constructor (props) {
+    super(props)
     this.state = {
-            
-      curso: 0,
+      isResultsVisible: false,
+      name: '',
+      age: 0,
+      selectedGenderIndex: 0,
+      generos: [
+        { id: 0, text: 'Selecione', enabled: false },
+        { id: 1, text: 'Masculino' },
+        { id: 2, text: 'Feminino' },
+        { id: 3, text: 'Outro' }
+      ],
+      earnings: 0,
+      selectedCourseIndex: 0,
       cursos: [
-        {keyC: 1, nomeC: 'Curso'},
-        {keyC: 2, nomeC: 'Administração'},
-        {keyC: 3, nomeC: 'Biologia'},
-        {keyC: 4, nomeC: 'Contábeis'},
-        {keyC: 5, nomeC: 'Sistemas de Informação'},
-        {keyC: 6, nomeC: 'Química'},
+        {id: 0, text: 'Curso', enabled: false },
+        {id: 2, text: 'Administração'},
+        {id: 3, text: 'Biologia'},
+        {id: 4, text: 'Contábeis'},
+        {id: 5, text: 'Sistemas de Informação'},
+        {id: 6, text: 'Química'},
       ],
-
-      periodo: 0,
+      selectedPeriodIndex: 0,
       periodos: [
-        {keyP: 1, nomeP: 'Período'},
-        {keyP: 2, nomeP: '1º'},
-        {keyP: 3, nomeP: '2º'},
-        {keyP: 4, nomeP: '3º'},
-        {keyP: 5, nomeP: '4º'},
-        {keyP: 6, nomeP: '5º'},
-        {keyP: 7, nomeP: '6º'},
-        {keyP: 8, nomeP: '7º'},
-        {keyP: 9, nomeP: '8º'},
+        { id: 0, text: 'Período', enabled: false },
+        { id: 1, text: '1º' },
+        { id: 2, text: '2º' },
+        { id: 3, text: '3º' },
+        { id: 4, text: '4º' },
+        { id: 5, text: '5º' },
+        { id: 6, text: '6º' },
+        { id: 7, text: '7º' },
+        { id: 8, text: '8º' },
+        { id: 9, text: '9º' },
+        { id: 10, text: '10º' },
       ],
-
-      turno: 0,
+      selectedShiftIndex: 0,
       turnos: [
-        {keyT: 1, nomeT: 'Turno'},
-        {keyT: 2, nomeT: 'Matutino'},
-        {keyT: 3, nomeT: 'Vespertino'},
-        {keyT: 4, nomeT: 'Noturno'}
-      ],
-
-      nomeCX: ''
+        { id: 0, text: 'Turno', enabled: false },
+        { id: 1, text: 'Matutino' },
+        { id: 2, text: 'Vespertino' },
+        { id: 3, text: 'Noturno' }
+      ]
     }
-    this.pegaNome = this.pegaNome.bind(this);
+
+    this.validateInfo = this.validateInfo.bind(this)
   }
 
-  pegaNome(texto){
-    if(texto.length > 0){
-      this.setState({nomeCX: texto});
-    }else{
-      this.setState({nomeCX: ''});
+  validateInfo () {
+    if (
+      this.state.name === '' ||
+      this.state.age === 0 ||
+      this.state.earnings === 0 ||
+      this.state.selectedGenderIndex === 0 ||
+      this.state.selectedCourseIndex === 0 ||
+      this.state.selectedPeriodIndex === 0 ||
+      this.state.selectedShiftIndex === 0
+    ) {
+      alert('Você deve preencher todos os campos obrigatórios!')
+    } else {
+      this.state.isResultsVisible = true
     }
-  }  
+  }
 
-  
-  render(){
-    let cursosItem = this.state.cursos.map((vC, kC) => {
-      return <Picker.Item keyC={kC} value={kC} label={vC.nomeC} />
-    })
-
-    let periodosItem = this.state.periodos.map((vP, kP) => {
-      return <Picker.Item keyP={kP} value={kP} label={vP.nomeP} />
-    })
-
-    let turnosItem = this.state.turnos.map((vT, kT) => {
-      return <Picker.Item keyP={kT} value={kT} label={vT.nomeT} />
-    })
-    
-
+  render () {
     return (
-      <View style={{flex: 1}}> 
-        <View style={{height: 120, backgroundColor: 'blue'}}>
-          <ImagemLogo
-            largura={87}
-            altura={81}
+      <ScrollView>
+      <View style={styles.containerView}>
+        <View style={styles.headerView}>
+        <ImagemLogo
+            largura={41}
+            altura={38}
           />
+        </View>
 
-        </View>     
-        <SafeAreaView style={styles.container}>                    
-          <Text style={styles.menu}>Selecione os parâmetros:</Text>
-          <View>
+        <View style={styles.body}>
+          <View style={styles.formWrapper}>
+            <Text style={styles.instruction}>
+              Preenche os campos para realizar seu cadastro
+            </Text>
+
+            <Text style={styles.labelText}>
+              Nome* :
+            </Text>
             <TextInput
-              style={styles.input}
-              placeholder='Digite seu Nome'
-              onChangeText={this.pegaNome}
+              style={styles.inputText}
+              placeholder="Digite o Nome"
+              keyboardType="default"
+              onChangeText={(value) => this.setState({ name: value })}
             />
+
+            <Text style={styles.labelText}>
+              Idade* :
+            </Text>
+            <TextInput
+              style={styles.inputText}
+              keyboardType="numeric"
+              onChangeText={(value) => this.setState({ age: value })}
+            />
+
+            <Text style={styles.labelText}>
+              Gênero :
+            </Text>
+            <Picker
+              selectedValue={this.state.selectedCourseIndex}
+              onValueChange={(value) => this.setState({ selectedGenderIndex: value })}
+              style={styles.inputPicker}
+            >
+              {
+                this.state.generos.map((item, index) => (
+                  <Picker.Item key={item.id} value={index} labelText={item.text} enabled={item.enabled || true} />
+                ))
+              }
+            </Picker>
+
+            <Text style={styles.labelText}>
+              Renda : R$ {this.state.earnings.toFixed(2)}
+            </Text>
+            <Slider
+              minimumValue={0}
+              maximumValue={10000}
+              step={100}
+              thumbTintColor="#3d8af7"
+              minimumTrackTintColor="#3d8af7"
+              onValueChange={(value) => this.setState({ earnings: value })}
+            />
+
+            <Text style={styles.labelText}>
+              Curso :
+            </Text>
+            <Picker
+              selectedValue={this.state.selectedCourseIndex}
+              onValueChange={(value) => this.setState({ selectedCourseIndex: value })}
+              style={styles.inputPicker}
+            >
+              {
+                this.state.cursos.map((item, index) => (
+                  <Picker.Item key={item.id} value={index} labelText={item.text} enabled={item.enabled || true} />
+                ))
+              }
+            </Picker>
+
+            <Text style={styles.labelText}>
+              Período :
+            </Text>
+            <Picker
+              selectedValue={this.state.selectedPeriodIndex}
+              onValueChange={(value) => this.setState({ selectedPeriodIndex: value })}
+              style={styles.inputPicker}
+            >
+              {
+                this.state.periodos.map((item, index) => (
+                  <Picker.Item key={item.id} value={index} labelText={item.text} enabled={item.enabled || true} />
+                ))
+              }
+            </Picker>
+
+            <Text style={styles.labelText}>
+              Turno:
+            </Text>
+            <Picker
+              selectedValue={this.state.selectedShiftIndex}
+              onValueChange={(value) => this.setState({ selectedShiftIndex: value })}
+              style={styles.inputPicker}
+            >
+              {
+                this.state.turnos.map((item, index) => (
+                  <Picker.Item key={item.id} value={index} labelText={item.text} enabled={item.enabled || true} />
+                ))
+              }
+            </Picker>
           </View>
 
-          <Picker
-            style={styles.input}
-            selectedValue={this.state.curso}
-            onValueChange={(itemValue) => this.setState({curso: itemValue})}
+          <TouchableOpacity
+            style={{
+              width: '100%',
+              height: 40,
+              backgroundColor: '#3d8af7',
+              borderRadius: 3,
+              padding: 12,
+              alignItems: 'center',
+            }}
+            onPress={this.validateInfo}
           >
-            {cursosItem}         
-          </Picker>
+            <Text style={{ color: '#fff' }}>Salvar informações</Text>
+          </TouchableOpacity>
 
-          <Picker
-            style={styles.input}
-            selectedValue={this.state.periodo}
-            onValueChange={(itemValue) => this.setState({periodo: itemValue})}
-          >
-            {periodosItem}         
-          </Picker>
+          <View style={styles.insertedInformation}>
+            <Text style={styles.insertedTitle}>
+              Informações inseridas:
+            </Text>
 
-          <Picker
-            style={styles.input}
-            selectedValue={this.state.turno}
-            onValueChange={(itemValue) => this.setState({turno: itemValue})}
-          >
-            {turnosItem}         
-          </Picker>
+            <View style={styles.row}>
+              <Text style={styles.labelText}> Nome: </Text>
+              <Text style={styles.info}> {this.state.name} </Text>
+            </View>
 
-          <Text style={styles.texto}>Informações Inseridas:</Text>
+            <View style={styles.row}>
+              <Text style={styles.labelText}> Curso: </Text>
+              <Text style={styles.info}>
+                {this.state.cursos[this.state.selectedCourseIndex].text}
+              </Text>
+            </View>
 
-          <Text style={styles.caixas}>Nome: {this.state.nomeCX}</Text>
+            <View style={[styles.row, styles.separated]}>
+              <View style={styles.row}>
+                <Text style={styles.labelText}> Período: </Text>
+                <Text style={styles.info}>
+                  {this.state.periodos[this.state.selectedPeriodIndex].text}
+                </Text>
+              </View>
 
-
-          <Text style={styles.caixas}>Curso: {this.state.cursos[this.state.curso].nomeC}</Text>
-          <Text style={styles.caixas}>
-            Período: {this.state.periodos[this.state.periodo].nomeP}{'          '}
-            Turno: {this.state.turnos[this.state.turno].nomeT}
-          </Text>
-          
-          
-        </SafeAreaView>
+              <View style={styles.row}>
+                <Text style={styles.labelText}> Turno: </Text>
+                <Text style={styles.info}>
+                  {this.state.turnos[this.state.selectedShiftIndex].text}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerView: {
     flex: 1,
-    backgroundColor: '#fff',    
-    marginTop: 10
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  menu:{
-    fontSize: 20,
-    fontWeight: 'normal',
+  headerView: {
+    maxHeight: 50,
+    width: '100%',
+    backgroundColor: '#3d8af7',
+    paddingHorizontal: 16,
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center'
   },
-  caixas:{
-    marginTop: 10,
-    fontSize: 15,
-    fontWeight: 'bold',
-    margin: 10
+  headerImg: {
+    fontSize: 24,
+    color: '#fff'
   },
-  input: {
-    width: 340,
-    height: 45,
+  body: {
+    flex: 1,
+    width: '100%',
+    padding: 16
+  },
+  formWrapper: {
+    width: '100%',
+    marginBottom: 16
+  },
+  instruction: {
+    fontSize: 20
+  },
+  mandatoryLabel: {
+    fontSize: 14,
+    color: 'red',
+    marginBottom: 8
+  },
+  inputText: {
+    height: 40,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#222',
-    fontSize: 20,
-    padding: 10,
-    margin: 10
+    marginVertical: 8,
+    paddingHorizontal: 16
   },
-  texto: {
-    fontSize: 18,
-    fontWeight: 'bold'
+  inputPicker: {
+    height: 40,
+    borderRadius: 4,
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    marginVertical: 8,
+    paddingHorizontal: 8
+  },
+  insertedTitle: {
+    fontSize: 20,
+    marginBottom: 16
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    marginVertical: 8
+  },
+  separated: {
+    justifyContent: 'space-between'
+  },
+  labelText: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    top: 5
+  },
+  info: {
+    fontSize: 16
   }
 });
-
-export default App;
